@@ -1,0 +1,22 @@
+{
+  "name": "ytshare",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Generate shareable summary cards from YouTube videos using AI",
+  "main": "background.js",
+  "scripts": {
+    "build": "rollup -c rollup.config.mjs"
+  },
+  "keywords": ["youtube", "ai", "chrome-extension", "summary"],
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "dompurify": "3.2.4",
+    "marked": "14.1.2",
+    "@rollup/plugin-commonjs": "26.0.1",
+    "@rollup/plugin-node-resolve": "15.2.3",
+    "rollup": "4.22.4",
+    "rollup-plugin-copy": "3.5.0",
+    "html-to-image": "1.11.11"
+  }
+}
+

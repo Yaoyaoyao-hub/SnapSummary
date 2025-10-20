@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build output (don't commit - contains API keys for distribution)
+dist/
+
+# Keep dist/ out of git but it will contain the API key for users
+# When you distribute (Chrome Web Store or ZIP), you share the dist/ folder
+# The source code stays clean without exposed keys
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+
+# API Keys (NEVER COMMIT!)
+src/config/api-keys.js
+api-keys.js
+
+# Temporary files
+*.tmp
+.cache/

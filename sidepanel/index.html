@@ -1,0 +1,389 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <title>SnapSummary - AI-Powered Content Summaries</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <div class="logo">
+          <span class="logo-icon">⚡</span>
+          <h1>SnapSummary</h1>
+        </div>
+        <p class="subtitle">AI-powered summaries for videos & articles</p>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="nav-tabs">
+        <button id="tab-new" class="tab-btn active">
+          <span class="icon">✨</span>
+          <span>New Summary</span>
+        </button>
+        <button id="tab-history" class="tab-btn">
+          <span class="icon">📚</span>
+          <span>History</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Wrapper -->
+      <div class="tab-content-wrapper">
+        <!-- New Summary Tab Content -->
+        <div id="new-summary-content" class="tab-content main-content">
+        
+        <!-- Content URL Section -->
+        <div class="input-section card">
+          <div class="section-header">
+            <span class="icon">🔗</span>
+            <label id="input-label">Content Source</label>
+          </div>
+          <div class="url-input-group">
+            <input
+              type="text"
+              id="youtube-url"
+              placeholder="Paste URL (YouTube, blog, article...) or click 'Auto-detect'"
+              class="input-field url-input"
+            />
+            <button id="button-auto-detect" class="btn-auto-detect" title="Auto-detect current page">
+              <span class="icon">🎯</span>
+            </button>
+          </div>
+
+          <!-- Advanced Options (Inline Collapsible) -->
+          <details class="inline-advanced">
+            <summary class="inline-summary">
+              <span class="icon">⚙️</span>
+              <span>Advanced Options</span>
+              <span class="chevron-small">▼</span>
+            </summary>
+            
+            <div class="inline-content">
+              <!-- Summary Type -->
+              <div class="compact-option">
+                <label for="summary-type">
+                  <span class="icon">📋</span>
+                  Summary Type
+                </label>
+                <select id="summary-type" class="input-field compact-field">
+                  <option value="teaser">Teaser - Engaging overview (1-5 sentences)</option>
+                  <option value="key-points">Key Points - Bullet list (3-7 points)</option>
+                  <option value="tldr" selected>TL;DR - Quick summary (1-5 sentences)</option>
+                  <option value="headline">Headline - Concise title (12-22 words)</option>
+                </select>
+              </div>
+              
+              <!-- Summary Length -->
+              <div class="compact-option">
+                <label for="summary-length">
+                  <span class="icon">📏</span>
+                  Summary Length
+                </label>
+                <select id="summary-length" class="input-field compact-field">
+                  <option value="short">Short</option>
+                  <option value="medium">Medium</option>
+                  <option value="long" selected>Long</option>
+                </select>
+              </div>
+              
+              <!-- Custom Prompt -->
+              <div class="compact-option">
+                <label for="custom-prompt">
+                  <span class="icon">✨</span>
+                  Custom Prompt (overrides type)
+                </label>
+                <textarea
+                  id="custom-prompt"
+                  placeholder="Leave empty to use type above, or enter custom instruction (uses Prompt API)"
+                  rows="2"
+                  class="input-field compact-field"
+                ></textarea>
+                <small class="hint">💡 Custom prompt switches to Prompt API for flexibility</small>
+              </div>
+
+              <!-- AI Settings -->
+              <div class="compact-option">
+                <label>
+                  <span class="icon">🤖</span>
+                  AI Settings
+                </label>
+                <div class="slider-group">
+                  <div class="slider-item">
+                    <span class="slider-label">Temperature</span>
+                    <span class="slider-value" id="label-temperature">0.8</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="temperature"
+                    min="0"
+                    max="2"
+                    step="0.1"
+                    value="0.8"
+                    class="slider"
+                  />
+                </div>
+                <div class="slider-group">
+                  <div class="slider-item">
+                    <span class="slider-label">Top-k</span>
+                    <span class="slider-value" id="label-top-k">3</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="top-k"
+                    min="1"
+                    max="8"
+                    step="1"
+                    value="3"
+                    class="slider"
+                  />
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- Content Type Indicator -->
+        <div id="content-type-indicator" class="content-type" hidden>
+          <span id="content-type-icon" class="type-icon">📺</span>
+          <span id="content-type-text">YouTube Video</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button id="button-fetch" class="btn btn-primary" disabled>
+            <span class="icon">✨</span>
+            <span id="fetch-button-text">Fetch & Analyze</span>
+          </button>
+          <button id="button-reset" class="btn btn-secondary" disabled>
+            <span class="icon">🔄</span>
+            <span>Reset</span>
+          </button>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="status" class="message message-info" hidden></div>
+        <div id="error" class="message message-error" hidden></div>
+        <div id="loading" class="loading-container" hidden>
+          <div class="spinner"></div>
+          <p>Generating your summary...</p>
+        </div>
+
+        <!-- Content Selection -->
+        <div id="content-selection" class="content-selection card" hidden>
+          <div class="preview-header">
+            <h3>📝 Select Content to Summarize</h3>
+            <p class="hint">Choose what to include in your summary</p>
+          </div>
+          
+          <div class="content-options">
+            <div class="video-preview">
+              <img id="preview-thumbnail" src="" alt="Video thumbnail" class="preview-thumb"/>
+              <div class="video-meta">
+                <h4 id="preview-title"></h4>
+                <p id="preview-channel"></p>
+              </div>
+            </div>
+
+
+            <div class="content-preview">
+              <label id="content-label">Content:</label>
+              <textarea 
+                id="description-text" 
+                class="description-textarea"
+                placeholder="Loading content..."
+                rows="8"
+              ></textarea>
+              <small class="hint">You can edit or select specific parts to summarize</small>
+            </div>
+
+          </div>
+
+          <div class="selection-actions">
+            <button id="button-proceed" class="btn btn-primary">
+              <span class="icon">✨</span>
+              <span>Generate Summary</span>
+            </button>
+            <button id="button-cancel-selection" class="btn btn-secondary">
+              <span class="icon">↩️</span>
+              <span>Cancel</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Card Preview -->
+        <div id="card-container" class="card-preview" hidden>
+          <div class="preview-header">
+            <h3>Your Summary Card</h3>
+          </div>
+          
+          <div id="share-card" class="share-card">
+            <div class="card-thumbnail-wrapper">
+              <img id="card-thumbnail" src="" alt="Content thumbnail" class="card-thumbnail"/>
+            </div>
+            <div class="card-content">
+              <h2 id="card-title" class="card-title" contenteditable="true"></h2>
+              <div id="card-summary" class="card-summary" contenteditable="true"></div>
+              
+              <!-- Personal Notes Section (hidden when empty on download) -->
+              <div id="card-personal-notes-section" class="card-personal-notes">
+                <div class="notes-header">
+                  <span class="icon">💭</span>
+                  <span>Personal Notes</span>
+                </div>
+                <div id="card-personal-notes" class="notes-content" contenteditable="true" data-placeholder="Click to add your thoughts, insights, or key takeaways..."></div>
+              </div>
+              
+              <div class="card-footer">
+                <div class="footer-left">
+                  <img src="../images/icon32.png" alt="SnapSummary" class="card-logo"/>
+                  <span class="card-branding">Generated with SnapSummary</span>
+                </div>
+                <div class="footer-right">
+                  <span id="card-timestamp" class="timestamp"></span>
+                  <a id="card-video-link" href="#" target="_blank" class="video-link">
+                    <span id="card-link-icon" class="icon">📄</span>
+                    <span id="card-link-text">Read Original Content</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Edit Hint (outside of share-card so it's not in the exported image) -->
+          <div class="edit-hint">
+            <span class="icon">✏️</span>
+            <span>Click title or summary to edit before sharing</span>
+          </div>
+          
+          <!-- Share Actions -->
+          <div class="share-buttons">
+            <button id="button-save-card" class="btn btn-success">
+              <span class="icon">💾</span>
+              <span>Save to History</span>
+            </button>
+            <button id="button-download" class="btn btn-primary">
+              <span class="icon">📥</span>
+              <span>Download Image</span>
+            </button>
+            <button id="button-translate" class="btn btn-translate">
+              <span class="icon">🌍</span>
+              <span>Translate Card</span>
+            </button>
+            <button id="button-share-card" class="btn btn-share">
+              <span class="icon">🌐</span>
+              <span>Share Card</span>
+            </button>
+          </div>
+        </div>
+          <!-- Translation Options -->
+          <div id="translation-options" class="translation-options" hidden>
+            <div class="translate-header">
+              <span class="icon">🌍</span>
+              <span>Translate Summary Card</span>
+            </div>
+            <div class="language-selector">
+              <label for="target-language">Select Target Language:</label>
+              <select id="target-language" class="language-select">
+                <option value="es">Español (Spanish)</option>
+                <option value="fr">Français (French)</option>
+                <option value="de">Deutsch (German)</option>
+                <option value="it">Italiano (Italian)</option>
+                <option value="pt">Português (Portuguese)</option>
+                <option value="zh">中文 (Chinese)</option>
+                <option value="ja">日本語 (Japanese)</option>
+                <option value="ko">한국어 (Korean)</option>
+                <option value="ar">العربية (Arabic)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+                <option value="ru">Русский (Russian)</option>
+              </select>
+            </div>
+            <div class="translate-actions">
+              <button id="button-confirm-translate" class="btn btn-primary">
+                <span class="icon">✅</span>
+                <span>Translate Now</span>
+              </button>
+              <button id="button-cancel-translate" class="btn btn-secondary">
+                <span>Cancel</span>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Translation Info (shown after translation) -->
+          <div id="translation-info" class="translation-info" hidden>
+            <span class="icon">🌍</span>
+            <span>Translated to: <strong id="translation-language"></strong></span>
+            <button id="button-restore-original" class="btn-restore">
+              <span>↩️ Restore Original</span>
+            </button>
+          </div>
+
+          <!-- Social Share Options (shown when Share Card clicked) -->
+          <div id="social-share-options" class="social-share-section" hidden>
+            <div class="share-header">
+              <span class="icon">🌐</span>
+              <span>Share Card</span>
+            </div>
+            <div class="share-note">
+              <small>Share your summary with the original content link</small>
+            </div>
+            <div class="social-buttons">
+              <button id="share-twitter" class="social-btn twitter">
+                <span>𝕏 Twitter</span>
+              </button>
+              <button id="share-linkedin" class="social-btn linkedin">
+                <span>in LinkedIn</span>
+              </button>
+              <button id="share-reddit" class="social-btn reddit">
+                <span>🤖 Reddit</span>
+              </button>
+              <button id="share-email" class="social-btn email">
+                <span>📧 Email</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- End New Summary Tab Content -->
+
+      <!-- History Tab Content -->
+      <div id="history-content" class="tab-content history-page" hidden>
+        <div class="history-header">
+          <h3>📚 Saved Summary Cards</h3>
+          <button id="button-clear-history" class="btn btn-secondary btn-small">
+            <span class="icon">🗑️</span>
+            <span>Clear All</span>
+          </button>
+        </div>
+        
+        <div id="history-list" class="history-list">
+          <div class="empty-state">
+            <span class="icon">📭</span>
+            <p>No saved cards yet</p>
+            <small>Generate and save summaries to see them here</small>
+          </div>
+        </div>
+      </div>
+      <!-- End History Tab Content -->
+      </div>
+      <!-- End Tab Content Wrapper -->
+
+      <!-- Footer -->
+      <div class="footer">
+        <details class="help-section">
+          <summary>💡 Quick Tips</summary>
+          <ul class="tips-list">
+            <li>Click 🎯 to auto-detect current YouTube video</li>
+            <li>Leave prompt empty for smart default summary</li>
+            <li>Try: "Summarize in 3 bullet points"</li>
+            <li>Adjust Temperature for creativity (0=focused, 2=creative)</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+
+    <script src="index.js" type="module"></script>
+  </body>
+</html>

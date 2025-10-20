@@ -1,0 +1,8 @@
+# Source files (only dist should be in npm package if published)
+sidepanel/
+images/
+*.md
+!README.md
+generate-icons.html
+rollup.config.mjs
+
