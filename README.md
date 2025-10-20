@@ -289,20 +289,31 @@ This extension uses a **smart approach** to balance ease-of-use with security:
 
 #### Quota Management
 
-- **Free tier**: 10,000 units/day (plenty for most users!)
-- **If exceeded**: Users can optionally add their own key (feature built-in)
-- **Monitor usage**: [Google Cloud Console](https://console.cloud.google.com/apis/dashboard)
+**How it works:**
 
-#### Advanced: User-Provided Keys (Optional)
+1. **Shared API Key**: All users share a single YouTube API key
+2. **Daily Quota**: 10,000 units/day (≈2,000-3,000 video fetches)
+3. **If Exceeded**: Extension shows friendly error, resets at midnight Pacific Time
+4. **Alternative**: Extension works great with web articles (no API key needed!)
 
-The extension supports **user override** if your quota runs out:
+**Typical Usage:**
+- 1 video fetch = ~3-5 quota units
+- 10,000 units = plenty for casual daily use
+- Quota resets daily at midnight PT
 
-```javascript
-// Built-in fallback system:
-1. Try your shared key (default)
-2. If quota exceeded → prompt user for their own key
-3. User can add key in settings (future feature)
+**If Quota Runs Out:**
 ```
+⏰ Daily quota exceeded (resets at midnight Pacific Time).
+The extension is free to use with a shared API key.
+Try again tomorrow, or the extension works great with web articles! 🌐
+```
+
+**Monitor Your Usage:**
+- [Google Cloud Console](https://console.cloud.google.com/apis/dashboard)
+- Set up alerts if needed
+- View daily/monthly usage charts
+
+**Pro Tip**: The extension's AI summarization works brilliantly on web articles without using any YouTube quota! 🎯
 
 **🔒 Security**: Your key is gitignored but included in builds. This is the **standard approach** for free Chrome extensions with shared API keys.
 

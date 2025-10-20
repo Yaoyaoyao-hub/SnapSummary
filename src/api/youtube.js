@@ -29,7 +29,9 @@ export async function fetchVideoData(videoId) {
     // Check if it's a quota error
     if (data.error.code === 403 && data.error.message.includes('quota')) {
       throw new Error(
-        'Daily quota exceeded. You can provide your own YouTube API key in Settings to continue using the extension.'
+        '⏰ Daily quota exceeded (resets at midnight Pacific Time). ' +
+        'The extension is free to use with a shared API key. ' +
+        'Try again tomorrow, or the extension works great with web articles! 🌐'
       );
     }
     throw new Error(data.error.message || 'Failed to fetch video data');
