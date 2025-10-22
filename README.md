@@ -78,6 +78,7 @@ src/
 ### Prerequisites
 - **Chrome 138+** (Canary, Dev, or Beta channel recommended)
 - Chrome AI features enabled (see below)
+- **YouTube API key** (for video processing) - [Get one here](https://console.cloud.google.com/)
 
 ### Enable Chrome AI Features
 
@@ -155,11 +156,34 @@ The extension will be available on the Chrome Web Store soon.
 
 1. **Navigate** to any YouTube video or article webpage
 2. **Click** the SnapSummary icon in your Chrome toolbar
-3. **Click** the 🎯 Auto-Detect button (or paste URL manually)
-4. **Review** the extracted content
-5. **Click** "Generate Summary"
-6. **Edit** the summary card if needed (all fields are editable)
-7. **Download** as an image, **Save** to history, or **Share** on social media
+3. **For YouTube videos**: Add your YouTube API key in Advanced Options (⚙️) - [Get one here](https://console.cloud.google.com/)
+4. **Click** the 🎯 Auto-Detect button (or paste URL manually)
+5. **Review** the extracted content
+6. **Click** "Generate Summary"
+7. **Edit** the summary card if needed (all fields are editable)
+8. **Download** as an image, **Save** to history, or **Share** on social media
+
+### YouTube API Key Setup
+
+**For YouTube video processing**, you'll need to add your YouTube API key:
+
+1. **Get a YouTube API key**:
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project (or select existing)
+   - Enable "YouTube Data API v3"
+   - Go to Credentials → Create Credentials → API Key
+   - Copy your API key
+
+2. **Add it to the extension**:
+   - Open SnapSummary extension
+   - Click **⚙️ Advanced Options**
+   - Scroll down to **🔑 YouTube API Key (optional)**
+   - Paste your API key
+   - Click **💾 Save** and **🧪 Test** to verify it works
+
+3. **That's it!** The extension will now use your personal API key for YouTube videos.
+
+**Note**: The extension works great with web articles without needing a YouTube API key!
 
 ### Advanced Usage
 

@@ -112,6 +112,7 @@ body {
   padding: 0;
 }
 
+
 .logo-icon {
   font-size: 32px;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
@@ -356,6 +357,87 @@ textarea.input-field {
   font-size: 12px !important;
   padding: 8px 10px !important;
   min-height: 50px !important;
+}
+
+/* API Key Input in Advanced Options */
+.api-key-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin-bottom: 8px;
+}
+
+.api-key-input {
+  flex: 1;
+  font-family: 'Courier New', monospace;
+  font-size: 11px !important;
+  min-height: 40px !important;
+}
+
+.btn-toggle-visibility {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-toggle-visibility:hover {
+  background: #667eea;
+  border-color: #667eea;
+  transform: scale(1.05);
+}
+
+.btn-toggle-visibility:hover .icon {
+  filter: brightness(0) invert(1);
+}
+
+.api-key-actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 11px;
+  min-width: 60px;
+}
+
+.api-key-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #f0f9ff;
+  border: 1px solid #10b981;
+  border-radius: 6px;
+  color: #065f46;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.api-key-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #fef2f2;
+  border: 1px solid #f87171;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 8px;
 }
 
 /* Sliders */
@@ -1446,6 +1528,7 @@ textarea.input-field {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(102, 126, 234, 0.6);
 }
+
 
 /* Animations */
 @keyframes fadeIn {

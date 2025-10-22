@@ -137,7 +137,16 @@ const elements = {
   sliderTemperature: document.getElementById('temperature'),
   sliderTopK: document.getElementById('top-k'),
   labelTemperature: document.getElementById('label-temperature'),
-  labelTopK: document.getElementById('label-top-k')
+  labelTopK: document.getElementById('label-top-k'),
+  
+  // API Key Settings
+  youtubeApiKeyInput: document.getElementById('youtube-api-key'),
+  toggleApiKeyButton: document.getElementById('toggle-api-key'),
+  saveApiKeyButton: document.getElementById('save-api-key'),
+  testApiKeyButton: document.getElementById('test-api-key'),
+  clearApiKeyButton: document.getElementById('clear-api-key'),
+  apiKeyStatus: document.getElementById('api-key-status'),
+  apiKeyError: document.getElementById('api-key-error')
 };
 
 // ==================== INITIALIZATION ====================
@@ -178,6 +187,9 @@ async function init() {
   
   // Load saved data
   loadSavedData();
+  
+  // Load API key
+  await loadCurrentApiKey();
   
   // Initialize AI settings
   await initAISettings();
@@ -264,6 +276,12 @@ function setupEventListeners() {
   elements.buttonSaveCard?.addEventListener('click', handleSaveCard);
   elements.buttonDownload.addEventListener('click', handleDownload);
   elements.buttonClearHistory?.addEventListener('click', handleClearHistory);
+  
+  // API Key actions
+  elements.toggleApiKeyButton?.addEventListener('click', handleToggleApiKeyVisibility);
+  elements.saveApiKeyButton?.addEventListener('click', handleSaveApiKey);
+  elements.testApiKeyButton?.addEventListener('click', handleTestApiKey);
+  elements.clearApiKeyButton?.addEventListener('click', handleClearApiKey);
   
   // Translation
   elements.buttonTranslate.addEventListener('click', handleTranslate);
@@ -856,6 +874,126 @@ async function handleClearHistory() {
   } catch (error) {
     showError('Failed to clear history');
     // Clear history error
+  }
+}
+
+// ==================== API KEY FUNCTIONS ====================
+
+/**
+ * Load current API key from storage
+ */
+async function loadCurrentApiKey() {
+  try {
+    const result = await chrome.storage.sync.get('user_youtube_api_key');
+    const userKey = result.user_youtube_api_key;
+    
+    if (userKey && userKey.trim().length > 0) {
+      setValue(elements.youtubeApiKeyInput, userKey);
+      hide(elements.apiKeyStatus);
+      hide(elements.apiKeyError);
+    } else {
+      setValue(elements.youtubeApiKeyInput, '');
+    }
+  } catch (error) {
+    console.error('Error loading API key:', error);
+  }
+}
+
+/**
+ * Toggle API key visibility
+ */
+function handleToggleApiKeyVisibility() {
+  const input = elements.youtubeApiKeyInput;
+  const button = elements.toggleApiKeyButton;
+  
+  if (input.type === 'password') {
+    input.type = 'text';
+    button.querySelector('.icon').textContent = '🙈';
+  } else {
+    input.type = 'password';
+    button.querySelector('.icon').textContent = '👁️';
+  }
+}
+
+/**
+ * Save API key to storage
+ */
+async function handleSaveApiKey() {
+  const apiKey = elements.youtubeApiKeyInput.value.trim();
+  
+  if (!apiKey) {
+    showError('Please enter an API key');
+    return;
+  }
+  
+  // Basic validation
+  if (!apiKey.startsWith('AIza') || apiKey.length !== 39) {
+    showError('Invalid API key format. YouTube API keys start with "AIza" and are 39 characters long.');
+    return;
+  }
+  
+  try {
+    await chrome.storage.sync.set({ user_youtube_api_key: apiKey });
+    showStatus('✅ API key saved successfully!');
+    hide(elements.apiKeyError);
+    hide(elements.apiKeyStatus);
+  } catch (error) {
+    showError('Failed to save API key. Please try again.');
+    console.error('Error saving API key:', error);
+  }
+}
+
+/**
+ * Test API key validity
+ */
+async function handleTestApiKey() {
+  const apiKey = elements.youtubeApiKeyInput.value.trim();
+  
+  if (!apiKey) {
+    showError('Please enter an API key first');
+    return;
+  }
+  
+  try {
+    showStatus('🧪 Testing API key...');
+    
+    // Test with a simple YouTube API call
+    const testUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=test&key=${apiKey}&maxResults=1`;
+    const response = await fetch(testUrl);
+    
+    if (response.ok) {
+      show(elements.apiKeyStatus);
+      hide(elements.apiKeyError);
+      showStatus('✅ API key is valid and working!');
+    } else {
+      const errorData = await response.json();
+      show(elements.apiKeyError);
+      hide(elements.apiKeyStatus);
+      showError(`API key test failed: ${errorData.error?.message || 'Unknown error'}`);
+    }
+  } catch (error) {
+    show(elements.apiKeyError);
+    hide(elements.apiKeyStatus);
+    showError('Failed to test API key. Please check your internet connection.');
+    console.error('Error testing API key:', error);
+  }
+}
+
+/**
+ * Clear API key
+ */
+async function handleClearApiKey() {
+  if (confirm('Are you sure you want to clear your API key? This will revert to the default shared key.')) {
+    try {
+      await chrome.storage.sync.remove('user_youtube_api_key');
+      setValue(elements.youtubeApiKeyInput, '');
+      hide(elements.apiKeyStatus);
+      hide(elements.apiKeyError);
+      showStatus('🗑️ API key cleared. Using default shared key.');
+    } catch (error) {
+      showError('Failed to clear API key. Please try again.');
+      console.error('Error clearing API key:', error);
+    }
   }
 }
 

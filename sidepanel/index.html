@@ -103,6 +103,51 @@
                 <small class="hint">💡 Custom prompt switches to Prompt API for flexibility</small>
               </div>
 
+              <!-- YouTube API Key -->
+              <div class="compact-option">
+                <label for="youtube-api-key">
+                  <span class="icon">🔑</span>
+                  YouTube API Key (optional)
+                </label>
+                <div class="api-key-input-group">
+                  <input
+                    type="password"
+                    id="youtube-api-key"
+                    placeholder="Enter your YouTube API key (starts with AIza...)"
+                    class="input-field compact-field api-key-input"
+                  />
+                  <button id="toggle-api-key" class="btn-toggle-visibility" title="Toggle visibility">
+                    <span class="icon">👁️</span>
+                  </button>
+                </div>
+                <div class="api-key-actions">
+                  <button id="save-api-key" class="btn btn-primary btn-small">
+                    <span class="icon">💾</span>
+                    <span>Save</span>
+                  </button>
+                  <button id="test-api-key" class="btn btn-secondary btn-small">
+                    <span class="icon">🧪</span>
+                    <span>Test</span>
+                  </button>
+                  <button id="clear-api-key" class="btn btn-danger btn-small">
+                    <span class="icon">🗑️</span>
+                    <span>Clear</span>
+                  </button>
+                </div>
+                <small class="hint">
+                  💡 <a href="https://console.cloud.google.com/" target="_blank">Get your API key here</a> - 
+                  Extension works with shared key for basic usage
+                </small>
+                <div id="api-key-status" class="api-key-status" hidden>
+                  <span class="status-icon">✅</span>
+                  <span class="status-text">API key is valid and working</span>
+                </div>
+                <div id="api-key-error" class="api-key-error" hidden>
+                  <span class="error-icon">❌</span>
+                  <span class="error-text">API key is invalid or not working</span>
+                </div>
+              </div>
+
               <!-- AI Settings -->
               <div class="compact-option">
                 <label>
