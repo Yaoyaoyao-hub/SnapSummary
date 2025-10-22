@@ -31,6 +31,10 @@ Thumbs.db
 src/config/api-keys.js
 api-keys.js
 
+# Distribution packages (contain API keys)
+*.zip
+SnapSummary-*.zip
+
 # Temporary files
 *.tmp
 .cache/
