@@ -77,7 +77,7 @@ export async function extractCaptions(tabId) {
     
     return null;
   } catch (error) {
-    console.error('Failed to extract captions:', error);
+    // Failed to extract captions
     return null;
   }
 }
@@ -118,7 +118,7 @@ function extractCaptionsFromPage() {
     return selectedTrack.baseUrl;
     
   } catch (error) {
-    console.error('Caption extraction error:', error);
+    // Caption extraction error
     return null;
   }
 }

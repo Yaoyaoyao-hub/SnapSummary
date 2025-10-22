@@ -19,15 +19,15 @@ export async function getYouTubeApiKey() {
     const userKey = result[STORAGE_KEY];
     
     if (userKey && userKey.trim().length > 0) {
-      console.log('Using user-provided API key');
+      // Using user-provided API key
       return userKey.trim();
     }
     
     // Fallback to default shared key
-    console.log('Using default shared API key');
+    // Using default shared API key
     return CONFIG.YOUTUBE_API_KEY;
   } catch (error) {
-    console.error('Error retrieving API key:', error);
+    // Error retrieving API key
     return CONFIG.YOUTUBE_API_KEY;
   }
 }
@@ -40,10 +40,10 @@ export async function getYouTubeApiKey() {
 export async function setUserApiKey(apiKey) {
   try {
     await chrome.storage.sync.set({ [STORAGE_KEY]: apiKey });
-    console.log('User API key saved successfully');
+    // User API key saved successfully
     return true;
   } catch (error) {
-    console.error('Error saving API key:', error);
+    // Error saving API key
     return false;
   }
 }
@@ -55,10 +55,10 @@ export async function setUserApiKey(apiKey) {
 export async function clearUserApiKey() {
   try {
     await chrome.storage.sync.remove(STORAGE_KEY);
-    console.log('User API key cleared, using default');
+    // User API key cleared, using default
     return true;
   } catch (error) {
-    console.error('Error clearing API key:', error);
+    // Error clearing API key
     return false;
   }
 }

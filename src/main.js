@@ -113,6 +113,8 @@ const elements = {
   cardSummary: document.getElementById('card-summary'),
   cardVideoLink: document.getElementById('card-video-link'),
   cardTimestamp: document.getElementById('card-timestamp'),
+  cardPersonalNotes: document.getElementById('card-personal-notes'),
+  cardPersonalNotesSection: document.getElementById('card-personal-notes-section'),
   
   // Translation
   translationOptions: document.getElementById('translation-options'),
@@ -214,7 +216,7 @@ async function initAISettings() {
       elements.sliderTopK.max = defaults.maxTopK;
     }
   } catch (error) {
-    console.error('Error initializing AI settings:', error);
+    // Error initializing AI settings
     showError(ERROR_MESSAGES.PROMPT_API_UNAVAILABLE);
   }
 }
@@ -346,7 +348,7 @@ async function handleAutoDetect() {
   } catch (error) {
     hideLoading();
     showError(error.message || 'An error occurred. Please try again.');
-    console.error('Auto-detect error:', error);
+    // Auto-detect error
   }
 }
 
@@ -384,7 +386,7 @@ async function handleFetch() {
     }
     
   } catch (error) {
-    console.error('Fetch error:', error);
+    // Fetch error
     hideLoading();
     showError(error.message || 'An error occurred. Please try again.');
   }
@@ -398,6 +400,11 @@ async function handleGenerateSummary() {
   
   hideContentSelection();
   showLoading();
+  
+  // Clear personal notes for new card generation
+  if (elements.cardPersonalNotes) {
+    elements.cardPersonalNotes.textContent = '';
+  }
   
   const customPrompt = elements.customPromptInput.value.trim();
   
@@ -444,7 +451,7 @@ async function handleGenerateSummary() {
   } catch (error) {
     hideLoading();
     showError(error.message || 'An error occurred. Please try again.');
-    console.error('Summary generation error:', error);
+    // Summary generation error
   }
 }
 
@@ -474,13 +481,13 @@ function handleReset() {
  * Handle download card button
  */
 async function handleDownload() {
-  console.log('💾 Download button clicked');
+    // Download button clicked
   showLoading();
   showStatus(STATUS_MESSAGES.GENERATING_IMAGE);
   
   try {
     const cardEl = getCardElement();
-    console.log('Card element:', cardEl);
+    // Card element found
     
     if (!cardEl) {
       throw new Error('Card element not found. Please generate a summary first.');
@@ -493,7 +500,7 @@ async function handleDownload() {
   } catch (error) {
     hideLoading();
     showError(error.message || 'Failed to download card.');
-    console.error('Download error:', error);
+    // Download error
   }
 }
 
@@ -634,7 +641,7 @@ async function handleConfirmTranslate() {
     
   } catch (error) {
     showError(error.message || 'Translation failed.');
-    console.error('Translation error:', error);
+    // Translation error
   } finally {
     enableButton(elements.buttonConfirmTranslate);
   }
@@ -674,15 +681,13 @@ function resetState() {
  * Switch between tabs
  */
 function switchTab(tab) {
-  console.log('🔄 Switching to tab:', tab);
+    // Switching to tab
   if (tab === 'new') {
     elements.tabNew?.classList.add('active');
     elements.tabHistory?.classList.remove('active');
     show(elements.newSummaryContent);
     hide(elements.historyContent);
-    console.log('✅ New Summary visible, History hidden');
-    console.log('New Summary hidden attr:', elements.newSummaryContent?.hasAttribute('hidden'));
-    console.log('History hidden attr:', elements.historyContent?.hasAttribute('hidden'));
+    // New Summary visible, History hidden
     // Scroll to top
     if (elements.newSummaryContent) {
       elements.newSummaryContent.scrollTop = 0;
@@ -692,14 +697,8 @@ function switchTab(tab) {
     elements.tabHistory?.classList.add('active');
     hide(elements.newSummaryContent);
     show(elements.historyContent);
-    console.log('✅ History visible, New Summary hidden');
-    console.log('New Summary hidden attr:', elements.newSummaryContent?.hasAttribute('hidden'));
-    console.log('History hidden attr:', elements.historyContent?.hasAttribute('hidden'));
-    console.log('History offsetTop:', elements.historyContent?.offsetTop);
-    console.log('New Summary display:', window.getComputedStyle(elements.newSummaryContent).display);
-    console.log('History display:', window.getComputedStyle(elements.historyContent).display);
-    
-    console.log('📚 Loading history cards...');
+    // History visible, New Summary hidden
+    // Loading history cards
     loadHistoryCards();
     
     // Scroll to top immediately
@@ -710,8 +709,7 @@ function switchTab(tab) {
       elements.historyContent.scrollTop = 0;
     }
     
-    console.log('📜 After scroll - window.scrollY:', window.scrollY);
-    console.log('📜 After scroll - History offsetTop:', elements.historyContent?.offsetTop);
+    // Scroll completed
   }
 }
 
@@ -729,13 +727,13 @@ async function handleSaveCard() {
       personalNotes: document.getElementById('card-personal-notes')?.textContent || ''
     };
     
-    console.log('💾 Saving card data:', cardData);
+    // Saving card data
     await saveSummaryCard(cardData);
-    console.log('✅ Card saved successfully!');
+    // Card saved successfully
     showStatus('✅ Card saved to history!', 2000);
   } catch (error) {
     showError('Failed to save card');
-    console.error('❌ Save error:', error);
+    // Save error
   }
 }
 
@@ -745,15 +743,15 @@ async function handleSaveCard() {
 async function loadHistoryCards() {
   try {
     const cards = await getSavedCards();
-    console.log('📚 Loading history cards:', cards.length, 'cards found', cards);
+    // Loading history cards
     
     if (!elements.historyList) {
-      console.error('❌ historyList element not found!');
+      // historyList element not found
       return;
     }
     
     if (cards.length === 0) {
-      console.log('📭 No cards to display, showing empty state');
+      // No cards to display, showing empty state
       elements.historyList.innerHTML = `
         <div class="empty-state">
           <span class="icon">📭</span>
@@ -764,7 +762,7 @@ async function loadHistoryCards() {
       return;
     }
     
-    console.log('✅ Displaying', cards.length, 'cards');
+    // Displaying cards
     
     const cardsHtml = cards.map(card => `
       <div class="history-card" data-card-id="${card.id}">
@@ -780,15 +778,9 @@ async function loadHistoryCards() {
       </div>
     `).join('');
     
-    console.log('📝 Generated HTML length:', cardsHtml.length, 'characters');
-    console.log('📝 First card HTML:', cardsHtml.substring(0, 200));
-    console.log('📍 History list element:', elements.historyList);
-    console.log('📍 History list visible?', elements.historyList.offsetParent !== null);
-    console.log('📍 History list display:', window.getComputedStyle(elements.historyList).display);
-    console.log('🔍 History list innerHTML before:', elements.historyList.innerHTML.substring(0, 100));
+    // Generated HTML for history cards
     setHTML(elements.historyList, cardsHtml);
-    console.log('✅ History list innerHTML after:', elements.historyList.innerHTML.substring(0, 200));
-    console.log('✅ History list childElementCount:', elements.historyList.childElementCount);
+    // History list updated
     
     // Attach event listeners
     document.querySelectorAll('.btn-view-card').forEach(btn => {
@@ -800,7 +792,7 @@ async function loadHistoryCards() {
     });
     
   } catch (error) {
-    console.error('Failed to load history:', error);
+    // Failed to load history
   }
 }
 
@@ -831,7 +823,7 @@ async function handleViewCard(cardId) {
     
   } catch (error) {
     showError('Failed to load card');
-    console.error('View card error:', error);
+    // View card error
   }
 }
 
@@ -845,7 +837,7 @@ async function handleDeleteCard(cardId) {
     showStatus('🗑️ Card deleted', 1500);
   } catch (error) {
     showError('Failed to delete card');
-    console.error('Delete error:', error);
+    // Delete error
   }
 }
 
@@ -863,7 +855,7 @@ async function handleClearHistory() {
     showStatus('🗑️ All cards deleted', 2000);
   } catch (error) {
     showError('Failed to clear history');
-    console.error('Clear history error:', error);
+    // Clear history error
   }
 }
 

@@ -207,7 +207,7 @@
         }
       }
     } catch (error) {
-      console.warn('Error parsing structured data:', error);
+      // Error parsing structured data
     }
     return null;
   }
@@ -443,8 +443,7 @@
             linkDensity < CONFIG.MAX_LINK_DENSITY &&
             contentDensity > CONFIG.MIN_CONTENT_DENSITY) {
           mainElement = el;
-          console.log(`✅ Found main content via semantic selector: ${selector}`);
-          console.log(`   Text: ${textLength} chars, Link Density: ${linkDensity.toFixed(2)}, Content Density: ${contentDensity.toFixed(2)}`);
+        // Found main content via semantic selector
           break;
         }
       }
@@ -452,7 +451,7 @@
     
     // Strategy 2: Advanced scoring with content quality metrics
     if (!mainElement) {
-      console.log('🔍 Semantic selectors failed, using advanced scoring...');
+      // Semantic selectors failed, using advanced scoring
       const containers = Array.from(document.querySelectorAll('div, section, main, article, [role="main"]'));
       
       containers.forEach(container => {
@@ -493,13 +492,12 @@
         if (score > bestScore) {
           bestScore = score;
           mainElement = container;
-          console.log(`📊 New best score: ${score.toFixed(0)} - ${textLength} chars, ${paragraphs.length} paragraphs`);
-          console.log(`   Link Density: ${linkDensity.toFixed(2)}, Content Density: ${contentDensity.toFixed(2)}`);
+          // New best score found
         }
       });
       
       if (mainElement) {
-        console.log(`✅ Found main content via scoring (score: ${bestScore.toFixed(0)})`);
+        // Found main content via scoring
       }
     }
     
@@ -662,14 +660,14 @@
 
   // ============= MAIN CONTENT EXTRACTION =============
   
-  console.log('🔍 Starting main content extraction...');
+  // Starting main content extraction
   const mainElement = findMainContent();
   
   if (mainElement) {
-    console.log('✅ Main content element found, extracting text...');
+    // Main content element found, extracting text
     result.content = extractStructuredText(mainElement);
   } else {
-    console.warn('⚠️  No main content element found, using fallback...');
+    // No main content element found, using fallback
     // Fallback: Get all visible text (risky but better than nothing)
     result.content = document.body.innerText || document.body.textContent || '';
   }
@@ -681,7 +679,7 @@
   result.wordCount = result.content.split(/\s+/).filter(w => w.length > 0).length;
   result.readingTime = estimateReadingTime(result.content);
   
-  console.log(`📊 Extracted ${result.wordCount} words (${result.readingTime} min read)`);
+  // Content extracted successfully
   
   // Create excerpt if not available
   if (!result.excerpt && result.content) {
@@ -697,13 +695,13 @@
   const hasTitle = result.title && result.title !== 'Web Page';
   
   if (!hasValidContent) {
-    console.warn('⚠️  Content extraction may be incomplete - content too short');
+    // Content extraction may be incomplete - content too short
   } else {
-    console.log('✅ Content extraction successful!');
+    // Content extraction successful
   }
   
   if (!hasTitle) {
-    console.warn('⚠️  Could not extract a meaningful title');
+    // Could not extract a meaningful title
   }
 
   // Return the extracted content

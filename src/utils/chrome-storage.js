@@ -36,10 +36,10 @@ export async function saveSummaryCard(card) {
     // Save to Chrome storage
     await chrome.storage.local.set({ [STORAGE_KEY]: limitedCards });
     
-    console.log('✅ Card saved to history');
+    // Card saved to history
     return cardData.id;
   } catch (error) {
-    console.error('Failed to save card:', error);
+    // Failed to save card
     throw error;
   }
 }
@@ -53,7 +53,7 @@ export async function getSavedCards() {
     const result = await chrome.storage.local.get([STORAGE_KEY]);
     return result[STORAGE_KEY] || [];
   } catch (error) {
-    console.error('Failed to load saved cards:', error);
+    // Failed to load saved cards
     return [];
   }
 }
@@ -69,7 +69,7 @@ export async function deleteSavedCard(cardId) {
     const filtered = cards.filter(card => card.id !== cardId);
     await chrome.storage.local.set({ [STORAGE_KEY]: filtered });
   } catch (error) {
-    console.error('Failed to delete card:', error);
+    // Failed to delete card
     throw error;
   }
 }
@@ -82,7 +82,7 @@ export async function clearAllSavedCards() {
   try {
     await chrome.storage.local.set({ [STORAGE_KEY]: [] });
   } catch (error) {
-    console.error('Failed to clear cards:', error);
+    // Failed to clear cards
     throw error;
   }
 }
@@ -97,7 +97,7 @@ export async function getSavedCardById(cardId) {
     const cards = await getSavedCards();
     return cards.find(card => card.id === cardId) || null;
   } catch (error) {
-    console.error('Failed to get card:', error);
+    // Failed to get card
     return null;
   }
 }
